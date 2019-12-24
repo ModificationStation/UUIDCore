@@ -1,0 +1,4 @@
+name: UUIDRecieverExample
+description: Recieve Event
+version: 1.1
+main: com.johnymuffin.uuidreciever.UUIDReciever
