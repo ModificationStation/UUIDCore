@@ -1,0 +1,4 @@
+name: UUIDCore
+description: Basic API Methods for getting UUIDs
+version: 1.0
+main: com.johnymuffin.uuidcore.UUIDCore
