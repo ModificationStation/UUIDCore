@@ -5,7 +5,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerListener;
 
 import java.util.UUID;
-import java.util.logging.Logger;
 
 import static com.johnymuffin.uuidcore.UUIDMethods.getUUIDFromNameMojang;
 import static com.johnymuffin.uuidcore.event.callPlayerUUIDEvent.callUUIDLogin;
@@ -20,13 +19,13 @@ public class UUIDPlayerListener extends PlayerListener {
 
     @Override
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if(event.getPlayer() == null) {
+        if (event.getPlayer() == null) {
             return;
         }
 
-        if(plugin.getUUIDs().containsKey(event.getPlayer().getName())) {
+        if (plugin.getUUIDs().containsKey(event.getPlayer().getName())) {
             UUID playerUUID = plugin.getUUIDs().get(event.getPlayer().getName());
-            if(playerUUID != null) {
+            if (playerUUID != null) {
                 Bukkit.getServer().getLogger().info("[UUIDCore] Fetched UUID from Memory for: " + event.getPlayer().getName() + " | " + playerUUID.toString());
                 //Run Event
                 callUUIDLogin(event.getPlayer(), playerUUID);
@@ -41,30 +40,33 @@ public class UUIDPlayerListener extends PlayerListener {
 
             @Override
             public void run() {
+                UUID playerUUID = null;
                 try {
-                    UUID playerUUID = getUUIDFromNameMojang(event.getPlayer().getName());
+                    playerUUID = getUUIDFromNameMojang(event.getPlayer().getName());
+                } catch (Exception e) {
+                    //Unable to get UUID Info
+                    playerUUID = null;
+                } finally {
+                    UUID finalPlayerUUID = playerUUID;
                     Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                         @Override
                         public void run() {
-                            if(event.getPlayer().isOnline()) {
-                                Bukkit.getServer().getLogger().info("[UUIDCore] Fetched UUID from Mojang for: " + event.getPlayer().getName() + " | " + playerUUID.toString());
-                                plugin.getUUIDs().put(event.getPlayer().getName(), playerUUID);
-                                callUUIDLogin(event.getPlayer(), playerUUID);
+                            callUUIDLogin(event.getPlayer(), finalPlayerUUID);
+                            if(finalPlayerUUID == null) {
+                                Bukkit.getServer().getLogger().info("[UUIDCore] UUID Fetch from Mojang failed for : " + event.getPlayer().getName());
+                            } else {
+                                Bukkit.getServer().getLogger().info("[UUIDCore] Fetched UUID from Mojang for: " + event.getPlayer().getName() + " | " + finalPlayerUUID.toString());
+                                plugin.getUUIDs().put(event.getPlayer().getName(), finalPlayerUUID);
                             }
+
                         }
                     }, 0L);
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
             }
         }, 0L);
 
 
-
-
-
     }
-
 
 
 }
