@@ -1,5 +1,8 @@
 package com.johnymuffin.uuidcore;
 
+import com.evilmidget38.NameFetcher;
+
+import java.util.Arrays;
 import java.util.UUID;
 
 import static com.evilmidget38.UUIDFetcher.getUUIDOf;
@@ -13,5 +16,7 @@ public class UUIDMethods {
         return UUID;
     }
 
-
+    public static String getNameFromUUIDMojang(UUID UUID) throws Exception {
+        return (String) (new NameFetcher(Arrays.asList(new UUID[]{UUID}))).call().get(UUID);
+    }
 }
