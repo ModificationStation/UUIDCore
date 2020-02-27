@@ -44,6 +44,7 @@ public class UUIDPlayerListener extends PlayerListener {
                     playerUUID = getUUIDFromNameMojang(event.getPlayer().getName());
                 } catch (Throwable e) {
                     //Unable to get UUID Info
+                    Bukkit.getServer().getLogger().warning("[UUIDCore] Unable to fetch UUID for user \"" + event.getPlayer().getName() + "\", user might not be registered at Mojang?");
                     playerUUID = null;
                 } finally {
                     UUID finalPlayerUUID = playerUUID;
